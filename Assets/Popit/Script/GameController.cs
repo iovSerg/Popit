@@ -3,17 +3,20 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
-    [SerializeField] private SphereController[] spheres;
 
-    [SerializeField] private float _waitActiveSphere = 1f;
-    [SerializeField] private int _quantitySphere = 3;
-    [SerializeField] private bool _isActiveCourutine = false;
+	[Header("Time visibility sphere")]
+    [SerializeField] private float _timeApperance = 0.5f;
+	[SerializeField] private float _timeDecrease = 0.1f;
+	[Space(2)]
+	[Header("Audio click sphere")]
 	[SerializeField] private AudioClip _clipClick;
 
+    private SphereController[] spheres;
 	private AudioSource audioSource;
 
-
 	private float _toNextLevel = 3;
+    private int _quantitySphere = 1;
+    private bool _isActiveCourutine = false;
 
 	void Start()
     {
@@ -27,20 +30,21 @@ public class GameController : MonoBehaviour
     }
     void Update()
     {
-		CheckActiveSphere();
 		if(_toNextLevel == 0) NextLevel();
+		CheckActiveSphere();
     }
 
 	private void NextLevel()
 	{
+		UIController.EventNextLevel?.Invoke();
 		_toNextLevel = 3;
 		_quantitySphere++;
 		if(_quantitySphere ==  spheres.Length)
 		{
-			Time.timeScale = 0f;
+			
 		}
-		if (_waitActiveSphere > 0.2f)
-			_waitActiveSphere -= 0.1f;
+		if (_timeApperance > _timeDecrease)
+			_timeApperance -= _timeDecrease;
 	}
 
 	private void ActiveSphere()
@@ -86,7 +90,7 @@ public class GameController : MonoBehaviour
 
 	private IEnumerator WaitActiveSphere()
 	{
-		yield return new WaitForSeconds(_waitActiveSphere);
+		yield return new WaitForSeconds(_timeApperance);
         ActiveSphere();
 		_toNextLevel--;
 		_isActiveCourutine = false;

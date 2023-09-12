@@ -488,6 +488,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   game_UI: {fileID: 1327754525}
   menu_UI: {fileID: 2933670645313559077}
+  level: {fileID: 3378167404760391603}
 --- !u!1 &783057430
 GameObject:
   m_ObjectHideFlags: 0
@@ -1285,10 +1286,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d978c10289778cf41acf1573d88b8093, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spheres: []
-  _waitActiveSphere: 1
-  _quantitySphere: 3
-  _isActiveCourutine: 0
+  _timeApperance: 0.5
+  _timeDecrease: 0.1
   _clipClick: {fileID: 8300000, guid: 6389169761423f14295ba6c5eb23bb37, type: 3}
 --- !u!82 &919132149211381165
 AudioSource:

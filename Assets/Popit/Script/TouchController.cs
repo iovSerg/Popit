@@ -27,6 +27,7 @@ public class TouchController :MonoBehaviour ,IPointerDownHandler, IDragHandler, 
 		{
 			if(hitInfo.collider.gameObject.TryGetComponent<SphereController>(out SphereController sphere))
 			{
+				if(sphere.isActive)
 				sphere.SetState(false);
 			}
 		}

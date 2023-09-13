@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -8,42 +6,72 @@ using UnityEngine.SceneManagement;
 public class UIController : MonoBehaviour
 {
 	public static Action EventNextLevel;
-	public static Action<float> EventGameOver;
-	public static int SceneIndex = 0;
+	public static Action EventGameOver;
 
+	// ? Level : Unlim
+	public static bool GameMode = true;
+
+	[Header("UI Component")]
     [SerializeField] private GameObject game_UI;
     [SerializeField] private GameObject menu_UI;
-
-
+	[SerializeField] private GameObject gameOver_UI;
+	[Space(1)]
+	[Header("Game UI Component")]
 	[SerializeField] private TextMeshProUGUI level;
-	[SerializeField] private TextMeshProUGUI levelHighScore;
-	[SerializeField] private TextMeshProUGUI unlimHighScore;
+	[Space(1)]
+	[Header("Main Menu UI Component")]
+	[SerializeField] private TextMeshProUGUI levelBestTime;
+	[SerializeField] private TextMeshProUGUI unlimBestTime;
+	[Space(1)]
+	[Header("Game Over UI Component")]
+	[SerializeField] private TextMeshProUGUI bestTime;
+	[SerializeField] private TextMeshProUGUI currentTime;
 
 	private int _level = 1;
     private bool _isVibration = false;
 
 	//Player score
-	private float _bestUnlimTime;
-	private float _bestLevelTime;
+	private float _bestUnlimTime = 0f;
+	private float _bestLevelTime = 0f;
+
+	private float _timeGame;
 
 	private void Start()
 	{
-		if(SceneIndex == 1)
-		{
+		EventNextLevel += OnNextLevel;
+		EventGameOver += OnGameOver;
+
+		if (GameMode)
 			level.text = "Level : " + _level.ToString();
-			EventNextLevel += OnNextLevel;
+		else
+			level.text = "Time : ";
+
+		LoadScore();
+	}
+	private void Update()
+	{
+		_timeGame += Time.deltaTime;
+		if(!GameMode) level.text = "Time : " + TimeSpan.FromMinutes(_timeGame).ToString().Substring(0, 5);
+	}
+	private void OnGameOver()
+	{
+		Time.timeScale = 0f;
+		game_UI.SetActive(false);
+		gameOver_UI.SetActive(true);
+
+		if (GameMode)
+		{
+			bestTime.text = _bestLevelTime.ToString() + " sec";
+			if (_timeGame < _bestLevelTime) PlayerPrefs.SetFloat("_bestLevelTime", _bestLevelTime);
 		}
 		else
 		{
-			level.text = "Time : ";
-			EventGameOver += OnGameoVer;
+			bestTime.text = _bestUnlimTime.ToString() + " sec";
+			if (_timeGame > _bestUnlimTime) PlayerPrefs.SetFloat("_bestUnlimTime", _bestUnlimTime);
 		}
-		LoadScore();
-	}
 
-	private void OnGameoVer(float time)
-	{
 		
+		currentTime.text = TimeSpan.FromMinutes(_timeGame).ToString().Substring(0, 5);
 	}
 
 	private void LoadScore()
@@ -54,7 +82,7 @@ public class UIController : MonoBehaviour
 
 		_bestUnlimTime = PlayerPrefs.GetFloat("_bestUnlimTime");
 
-		unlimHighScore.text = _bestUnlimTime.ToString() + " sec";
+		unlimBestTime.text = _bestUnlimTime.ToString() + " sec";
 
 
 		//Level
@@ -63,15 +91,15 @@ public class UIController : MonoBehaviour
 
 		_bestLevelTime = PlayerPrefs.GetFloat("_bestLevelTime");
 
-		levelHighScore.text = _bestLevelTime.ToString() + " sec";
+		levelBestTime.text = _bestLevelTime.ToString() + " sec";
 	}
 
 	private void OnNextLevel()
 	{
-			_level++;
-			level.text = "Level : " + _level.ToString();
+		_level++;
+		level.text = "Level : " + _level.ToString();
 	}
-	#region Menu UI
+
 	public void PressButtonMenu()
 	{
 
@@ -90,25 +118,25 @@ public class UIController : MonoBehaviour
 	{
 		_isVibration = !_isVibration;
 	}
-	public void PressButtonRestart()
+	public void PressButtonMainMenu()
 	{
-
+		SceneManager.LoadScene(0);
 	}
 	public void PressButtonQuit()
 	{
 		Application.Quit();
 	}
-	#endregion
 
 	public void SelecetLevel(int scene)
 	{
-		SceneIndex = scene;
-		SceneManager.LoadScene(scene);
+		GameMode = scene == 1 ? true : false;
+		SceneManager.LoadScene(1);
 	}
 
 	private void OnDestroy()
 	{
 		EventNextLevel -= OnNextLevel;
+		EventGameOver -= OnGameOver;
 	}
 
 }

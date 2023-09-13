@@ -6,11 +6,11 @@ public class SphereController : MonoBehaviour
 	public float timeActive;
 	public bool isActive = false;
 
-	[SerializeField] private IGameController gameController;
+	[SerializeField] private GameController gameController;
 	[SerializeField] private MeshRenderer render;
 	private void Awake()
 	{
-		gameController = GetComponentInParent<IGameController>();
+		gameController = GetComponentInParent<GameController>();
 
 		render = GetComponent<MeshRenderer>();
 	}
@@ -20,14 +20,18 @@ public class SphereController : MonoBehaviour
 	}
 	public void SetState(bool state)
 	{
-		if (!state) { gameController.PlayClick(); }
+		if (!state) { gameController.PlayClick(this); }
 		render.enabled = state;
 		isActive = state;
 	}
-
-	private IEnumerator ActiveSphere(float timeActive)
+	public void ActiveSphere(float time)
+	{
+		StartCoroutine(CorutineActiveSphere(time));
+	}
+	private IEnumerator CorutineActiveSphere(float timeActive)
 	{
 		yield return new WaitForSeconds(timeActive);
+		isActive = true;
 		render.enabled = true;
 	}
 	private IEnumerator NotActiveSphere(float timeActive)

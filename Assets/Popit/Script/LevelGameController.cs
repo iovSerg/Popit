@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class GameController : MonoBehaviour
+public class LevelGameController : MonoBehaviour,IGameController
 {
 
 	[Header("Time visibility sphere")]

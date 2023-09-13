@@ -6,11 +6,12 @@ public class SphereController : MonoBehaviour
 	public float timeActive;
 	public bool isActive = false;
 
-	[SerializeField] private GameController gameController;
+	[SerializeField] private IGameController gameController;
 	[SerializeField] private MeshRenderer render;
 	private void Awake()
 	{
-		gameController = GetComponentInParent<GameController>();
+		gameController = GetComponentInParent<IGameController>();
+
 		render = GetComponent<MeshRenderer>();
 	}
 	public void ClickSphere()

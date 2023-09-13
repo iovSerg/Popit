@@ -18,8 +18,11 @@ public class GameController : MonoBehaviour
     private int _quantitySphere = 1;
     private bool _isActiveCourutine = false;
 
+
 	void Start()
     {
+		if(Time.timeScale == 0f) Time.timeScale = 1f;
+
 		audioSource = GetComponent<AudioSource>();
         spheres = GetComponentsInChildren<SphereController>();
         foreach (SphereController sphere in spheres)
@@ -39,17 +42,13 @@ public class GameController : MonoBehaviour
 		UIController.EventNextLevel?.Invoke();
 		_toNextLevel = 3;
 		_quantitySphere++;
-		if(_quantitySphere ==  spheres.Length)
-		{
-			
-		}
+
 		if (_timeApperance > _timeDecrease)
 			_timeApperance -= _timeDecrease;
 	}
 
 	private void ActiveSphere()
 	{
-
 		for(int i = 0; i < _quantitySphere; i++)
         {
             int index = Random.Range(0,spheres.Length);
